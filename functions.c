@@ -282,9 +282,11 @@
         if(stat(fname,fileInfo)==0){
         	if(S_ISDIR(fileInfo->st_mode)){
             	//es directorio
+              chown(fname, -1, grp->gr_gid);
               printf("dir");
         	}else{
         	   	//es archivo
+              chown(fname, -1, grp->gr_gid);
               printf("file");
         	}
         }else{
