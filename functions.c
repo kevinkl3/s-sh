@@ -316,6 +316,7 @@
   }
 
   int find_r(char* directory , struct Param* params){
+    struct Param* originalParams = params;
     struct dirent *pDirent;
     DIR *pDir;
     char* nameExpr;
@@ -362,7 +363,7 @@
                 char* dirRecursive = malloc(strlen(fname)+2);
                 sprintf(dirRecursive,"%s/",fname);
                 //printf("Archivos en %s:\n",dirRecursive);
-                find_r(dirRecursive,params);
+                find_r(dirRecursive,originalParams);
                 free(dirRecursive);
             }
           }
@@ -386,7 +387,10 @@
 
         /* Compile regular expression */
         reti = regcomp(&regex, reg, 0);
-        if( reti ){ fprintf(stderr, "Could not compile regex\n"); exit(1); }
+        if( reti ){
+          printError("Expresion regular invalida!\n");
+          exit(-1);
+        }
 
         /* Execute regular expression */
         reti = regexec(&regex, val, 0, NULL, 0);
@@ -400,7 +404,7 @@
             return -1;
         }else{
             regerror(reti, &regex, msgbuf, sizeof(msgbuf));
-            fprintf(stderr, "Regex match failed: %s\n", msgbuf);
+            fprintf(stderr, "Match con regex fallido: %s\n", msgbuf);
             //exit(1);
             regfree(&regex);
             return -2;

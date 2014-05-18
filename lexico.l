@@ -1,7 +1,7 @@
 digito [0-9]
 letra [a-zA-Z]
 otro "-"
-simbolo [\[\]\{\}\^\$\+\*]
+simbolo [\[\]\{\}\^\$\+\*\.\\]
 punto "."
 pleca "/"
 parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo})+
