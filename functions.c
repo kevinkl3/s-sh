@@ -56,7 +56,7 @@
     }
     pDir = opendir (directory);
     if (pDir == NULL) {
-        printf ("Cannot open directory '%s'\n", directory);
+        printf ("No se puede abrir el directorio '%s'\n", directory);
         return 1;
     }
 
@@ -66,7 +66,7 @@
     struct stat* fileInfo = malloc(sizeof(struct stat));
     int strSz,ok;
     while ((pDirent = readdir(pDir)) != NULL) {
-        strSz = strlen(directory) + strlen(pDirent->d_name);
+        strSz = strlen(directory) + strlen(pDirent->d_name) + 1;
         char* fname = (char*)malloc(strSz);
         sprintf(fname,"%s%s",directory,pDirent->d_name);
         ok = stat(fname,fileInfo);
@@ -91,9 +91,9 @@
         if(RECURSIVE == true && pDirent->d_name[0] != '.'){
           if(ok == 0){
             if(S_ISDIR(fileInfo->st_mode)){
-                char* dirRecursive = malloc(strlen(fname)+1);
+                char* dirRecursive = malloc(strlen(fname)+2);
                 sprintf(dirRecursive,"%s/",fname);
-                printf("files for %s:\n",dirRecursive);
+                printf("Archivos en %s:\n",dirRecursive);
                 ls_r(dirRecursive,params);
                 free(dirRecursive);
             }
@@ -238,18 +238,18 @@
       long gigas = bytes/GB;
       bytes -= gigas*GB;
       long megas = bytes/MB;
-      sprintf(cantidad,"%ld.%1ldG",gigas,megas);
+      sprintf(cantidad,"%ld.%1ldGB",gigas,megas);
       return cantidad;
     }else if(bytes > MB){
       long megas = bytes/MB;
       bytes -= megas*MB;
       long kilos = bytes/KB;
-      sprintf(cantidad,"%ld.%1ldM",megas,kilos);
+      sprintf(cantidad,"%ld.%1ldMB",megas,kilos);
       return cantidad;
     }else if(bytes > KB){
       long kilos = bytes/KB;
       bytes -= kilos*KB;
-      sprintf(cantidad,"%ld.%1ldK",kilos,bytes);
+      sprintf(cantidad,"%ld.%1ldKB",kilos,bytes);
       return cantidad;
     }
     sprintf(cantidad,"%ldB",bytes);
@@ -276,7 +276,7 @@
       else{
         struct Param* p = params;
         p = p->next;
-        // comprobar si es archivo o directorio
+        //comprobar si es archivo o directorio
         char* fname = p->value;
         struct stat* fileInfo = malloc(sizeof(struct stat));
         if(stat(fname,fileInfo)==0){
