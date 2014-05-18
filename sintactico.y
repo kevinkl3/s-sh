@@ -1,29 +1,34 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>     /* atoi */
-    int potencia(int a, int b){
-        return b <= 0 ? 1 : a * potencia(a,b-1);
-    }
-extern char *yytext;
+	#include "functions.h"
 %}
 
-%token NUMERO VARIABLE PAR_IZQ PAR_DER LS CD MKDIR CHGRP CHMOD CHOWN RM FIND
-%left MAS MENOS
-%left POR ENTRE
-%right POTENCIA
-%token EOL
+%union{
+	struct Param* param;
+	int entero;
+	char* cadena;
+}
+%token 		VARIABLE PAR_IZQ PAR_DER LS CD MKDIR CHGRP CHMOD CHOWN RM FIND
+%token		 <cadena> PARAMETRO
+%token 		 <entero> NUMERO
+
+%type			<param>	params
+%type			<entero> operacion fcall salida
+%left 		 MAS MENOS
+%left 		 POR ENTRE
+%right 		POTENCIA
+%token 		EOL
 
 %start salida
 
 %%
 
 
-salida : /*null*/{printf("\n>");}
-        | salida expresion EOL {printf(" %d\n>",$2);}
-        | salida EOL {printf("\n>");}
+salida : /*null*/{$$=0;printf("\n%s@%s> ",currentUser,hostName);}
+        | salida operacion EOL {printf(" %d\n%s@%s> ",$2,currentUser,hostName);}
+				| salida fcall EOL {printf("\n%s@%s> ",currentUser,hostName);}
+				| salida PARAMETRO {printf("\x1b[33mError %s, comando invalido.\n\x1b[0m",$2);}
+        | salida EOL {printf("\n%s@%s> ",currentUser,hostName);}
 ;
-
-expresion : fcall | operacion;
 
 operacion :   operacion MAS operacion {$$= $1 + $3;}
             | operacion MENOS operacion {$$ = $1 - $3;}
@@ -31,19 +36,24 @@ operacion :   operacion MAS operacion {$$= $1 + $3;}
             | operacion ENTRE operacion {$$ = $1 / $3;}
             | operacion POTENCIA operacion {$$ = potencia($1,$3);}
             | PAR_IZQ operacion PAR_DER {$$ = ($2);}
-            | NUMERO
+            | NUMERO {$$ = $1;}
 ;
 
-fcall  :     LS          {$$ = 0; printf("ls");}
-          |  CD          {$$ = 0; printf("cd");}
-          |  MKDIR       {$$ = 0; printf("mkdir");}
-          |  CHGRP       {$$ = 0; printf("chgrp");}
-          |  CHMOD       {$$ = 0; printf("chmod");}
-          |  CHOWN       {$$ = 0; printf("chown");}
-          |  RM          {$$ = 0; printf("rm");}
-          |  FIND        {$$ = 0; printf("find");}
+fcall  :     LS       params   {$$ = ls($2);}
+          |  CD       params   {$$ = cd($2);}
+          |  MKDIR    params   {$$ = makedir($2);}
+          |  CHGRP    params   {$$ = 0; printf("chgrp");}
+          |  CHMOD    params   {$$ = 0; printf("chmod");}
+          |  CHOWN    params   {$$ = 0; printf("chown");}
+          |  RM       params   {$$ = 0; printf("rm");}
+          |  FIND     params   {$$ = 0; printf("find");}
 ;
 
+params :  PARAMETRO params{
+						$$ = newParam($1,$2);
+					}
+					|/*null*/ {$$ = NULL}
+;
 
 %%
 

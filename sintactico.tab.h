@@ -39,51 +39,62 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     NUMERO = 258,
-     VARIABLE = 259,
-     PAR_IZQ = 260,
-     PAR_DER = 261,
-     LS = 262,
-     CD = 263,
-     MKDIR = 264,
-     CHGRP = 265,
-     CHMOD = 266,
-     CHOWN = 267,
-     RM = 268,
-     FIND = 269,
-     MENOS = 270,
-     MAS = 271,
-     ENTRE = 272,
-     POR = 273,
-     POTENCIA = 274,
-     EOL = 275
+     VARIABLE = 258,
+     PAR_IZQ = 259,
+     PAR_DER = 260,
+     LS = 261,
+     CD = 262,
+     MKDIR = 263,
+     CHGRP = 264,
+     CHMOD = 265,
+     CHOWN = 266,
+     RM = 267,
+     FIND = 268,
+     PARAMETRO = 269,
+     NUMERO = 270,
+     MENOS = 271,
+     MAS = 272,
+     ENTRE = 273,
+     POR = 274,
+     POTENCIA = 275,
+     EOL = 276
    };
 #endif
 /* Tokens.  */
-#define NUMERO 258
-#define VARIABLE 259
-#define PAR_IZQ 260
-#define PAR_DER 261
-#define LS 262
-#define CD 263
-#define MKDIR 264
-#define CHGRP 265
-#define CHMOD 266
-#define CHOWN 267
-#define RM 268
-#define FIND 269
-#define MENOS 270
-#define MAS 271
-#define ENTRE 272
-#define POR 273
-#define POTENCIA 274
-#define EOL 275
+#define VARIABLE 258
+#define PAR_IZQ 259
+#define PAR_DER 260
+#define LS 261
+#define CD 262
+#define MKDIR 263
+#define CHGRP 264
+#define CHMOD 265
+#define CHOWN 266
+#define RM 267
+#define FIND 268
+#define PARAMETRO 269
+#define NUMERO 270
+#define MENOS 271
+#define MAS 272
+#define ENTRE 273
+#define POR 274
+#define POTENCIA 275
+#define EOL 276
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+#line 5 "sintactico.y"
+{
+	struct Param* param;
+	int entero;
+	char* cadena;
+}
+/* Line 1529 of yacc.c.  */
+#line 97 "sintactico.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
