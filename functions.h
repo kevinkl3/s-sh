@@ -18,6 +18,7 @@ extern char *yytext;
 int ls(struct Param*);
 int cd(struct Param*);
 int makedir(struct Param*);
+int chgrp(struct Param*);
 int potencia(int,int);
 char* formatHuman(long,short);
 void printError(char*);

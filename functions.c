@@ -1,4 +1,5 @@
 #include "functions.h"
+#include <grp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #define false 0
@@ -183,3 +184,26 @@
   void printError(char* msg){
     printf("\x1b[33m%s\n\x1b[0m",msg);
   }
+
+  int chgrp(struct Param* params){
+    if(params == NULL){
+      printf("chgrp esperaba un parametro.");
+      return 1;
+    }else{
+      struct group *grp;
+      short int    lp;
+      grp = getgrnam(params->value);
+      if (NULL == grp)
+        printf("El Grupo que desea asignar no existe.");
+      else{
+        struct Param* p = params;
+        p = p->next;
+
+
+        // comprobar si es archivo o directorio
+        
+        
+      }
+    } 
+  }
+
