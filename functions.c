@@ -277,21 +277,26 @@
         struct Param* p = params;
         p = p->next;
         //comprobar si es archivo o directorio
-        char* fname = p->value;
+        char* fname = (char*)malloc(strlen(currentPath) + strlen(p->value)+1);
+        sprintf(fname,"%s%s",currentPath,p->value);
         struct stat* fileInfo = malloc(sizeof(struct stat));
         if(stat(fname,fileInfo)==0){
+          int salida = chown(fname, -1, grp->gr_gid);
+          if(salida == -1){
+            printError("Error al cambiar el grupo del archivo/directorio.");
+            free(fname);
+            return -1;
+          }else if(salida == 0){
+            printf("ok!");
+          }
+          /*
         	if(S_ISDIR(fileInfo->st_mode)){
-            	//es directorio
-              chown(fname, -1, grp->gr_gid);
-              printf("dir");
         	}else{
-        	   	//es archivo
-              chown(fname, -1, grp->gr_gid);
-              printf("file");
-        	}
+        	}*/
         }else{
         	printError("el archivo no existe");
         }
+        free(fname);
       }
     }
     return 0;
