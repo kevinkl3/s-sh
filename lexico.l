@@ -1,9 +1,11 @@
 digito [0-9]
 letra [a-zA-Z]
 otro "-"
+simbolo [\[\]\{\}\^\$\+\*\.\\]
 punto "."
 pleca "/"
-parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{digito})+
+
+parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo}|{digito})+
 %{
 #include <stdio.h>
 #include "sintactico.tab.h"

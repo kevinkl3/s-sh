@@ -47,7 +47,7 @@ fcall  :     LS       params   {$$ = ls($2);}
           |  CHMOD    params   {$$ = _chmod($2);}
           |  CHOWN    params   {$$ = 0; printf("chown");}
           |  RM       params   {$$ = rm($2);}
-          |  FIND     params   {$$ = 0; printf("find");}
+          |  FIND     params   {$$ = find($2);}
 ;
 
 params :  PARAMETRO params{

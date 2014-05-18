@@ -28,10 +28,14 @@ int cd(struct Param*);
 int makedir(struct Param*);
 int mv(struct Param*);
 int rm(struct Param*);
+int find(struct Param*);
+int find_r(char*,struct Param*);
 int chgrp(struct Param*);
 int potencia(int,int);
 int _chmod(struct Param*);
 int _chmod_r(const char* ,struct Param*);
+
+int regexcmp(char*,char*);
 
 char* formatHuman(long,short);
 void printError(const char*);
