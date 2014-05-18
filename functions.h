@@ -29,6 +29,7 @@ int mv(struct Param*);
 int rm(struct Param*);
 int chgrp(struct Param*);
 int potencia(int,int);
+int _chmod(struct Param*);
 char* formatHuman(long,short);
 void printError(char*);
 #endif

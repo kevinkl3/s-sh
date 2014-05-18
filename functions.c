@@ -269,3 +269,29 @@
       }
     }
   }
+
+  int _chmod( struct Param* params){
+      if(currentPath == NULL){
+        currentPath = (char*)malloc(3);
+        sprintf(currentPath,"./");
+      }
+      if(params == NULL){
+          printf("chmod esperaba parámetros");
+          return 1;
+      }else{
+         char* mode = params->value;
+         struct Param* p = params;
+         p = p->next;
+         char* buf = (char*)malloc(strlen(currentPath) + strlen(p->value) + 1);
+         sprintf(buf,"%s%s",currentPath,p->value);
+         int i = strtol(mode, 0, 8);
+         if (chmod (buf,i) < 0){
+             fprintf(stderr, ": error in chmod(%s, %s) - %d (%s)\n",buf, mode, errno, strerror(errno));
+             free(buf);
+             return 1;
+         }else{
+             free(buf);
+             return 0;
+         }
+      }
+  }

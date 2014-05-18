@@ -3,7 +3,7 @@ letra [a-zA-Z]
 otro "-"
 punto "."
 pleca "/"
-parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro})+
+parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{digito})+
 %{
 #include <stdio.h>
 #include "sintactico.tab.h"
@@ -11,8 +11,6 @@ parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro})+
 
 %%
 
-
-{digito}+ 									 {yylval.entero = atoi(yytext);return NUMERO;}
 "ls"												 {return LS;}
 "cd"												 {return CD;}
 "mkdir" 										 {return MKDIR;}

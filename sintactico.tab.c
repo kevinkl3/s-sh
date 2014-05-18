@@ -1466,7 +1466,7 @@ yyreduce:
 
   case 19:
 #line 47 "sintactico.y"
-    {(yyval.entero) = 0; printf("chmod");;}
+    {(yyval.entero) = _chmod((yyvsp[(2) - (2)].param));;}
     break;
 
   case 20:
