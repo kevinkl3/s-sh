@@ -3,7 +3,7 @@
 #ifndef PARAM_H
 #define PARAM_H
   struct Param* newParam(char*,struct Param*);
-
+  void deleteParam(struct Param*);
   struct Param{
     char* value;
     struct Param* next;

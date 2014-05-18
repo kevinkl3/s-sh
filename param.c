@@ -8,3 +8,12 @@ struct Param* newParam(char* val,struct Param* next){
   nParam->next = next;
   return nParam;
 }
+
+void deleteParam(struct Param* param){
+  struct Param* p;
+  do{
+    p = param->next;
+    free(param);
+    param = p;
+  }while(param != NULL);
+}

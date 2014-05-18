@@ -22,6 +22,7 @@ char hostName[HOST_NAME_MAX];
 extern char *yytext;
 
 /*Prototypes*/
+int ls_r(const char*,struct Param* params);
 int ls(struct Param*);
 int cd(struct Param*);
 int makedir(struct Param*);
@@ -31,5 +32,5 @@ int chgrp(struct Param*);
 int potencia(int,int);
 int _chmod(struct Param*);
 char* formatHuman(long,short);
-void printError(char*);
+void printError(const char*);
 #endif

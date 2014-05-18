@@ -10,8 +10,16 @@
 #define GB 1024*1024*1024
   /*SH Functions*/
 
-  /*ls command*/
   int ls(struct Param* params){
+    if(currentPath == NULL){
+      currentPath = (char*)malloc(3);
+      sprintf(currentPath,"./");
+    }
+    return ls_r(currentPath,params);
+  }
+
+  /*ls command*/
+  int ls_r(const char* directory,struct Param* params){
     struct dirent *pDirent;
     DIR *pDir;
 
@@ -46,45 +54,59 @@
         }
         p = p->next;
     }
-
-    if(currentPath == NULL){
-      currentPath = (char*)malloc(3);
-      sprintf(currentPath,"./");
-    }
-    pDir = opendir (currentPath);
+    pDir = opendir (directory);
     if (pDir == NULL) {
-        printf ("Cannot open directory '%s'\n", currentPath);
+        printf ("No se puede abrir el directorio '%s'\n", directory);
         return 1;
     }
 
     if(LARGE==true){
       printf("Links\tInode\tSize\t\tName\n");
     }
+    struct stat* fileInfo = malloc(sizeof(struct stat));
+    int strSz,ok;
     while ((pDirent = readdir(pDir)) != NULL) {
+        strSz = strlen(directory) + strlen(pDirent->d_name) + 1;
+        char* fname = (char*)malloc(strSz);
+        sprintf(fname,"%s%s",directory,pDirent->d_name);
+        ok = stat(fname,fileInfo);
+
         if(pDirent->d_name[0] != '.' || ALL == true){
           if(LARGE == false)
             printf ("%s\n", pDirent->d_name);
           else{
-            struct stat* fileInfo = malloc(sizeof(struct stat));
-            int strSz = strlen(currentPath) + strlen(pDirent->d_name);
-            char* fname = (char*)malloc(strSz);
-            sprintf(fname,"%s%s",currentPath,pDirent->d_name);
-            if(stat(fname,fileInfo)==0){
-              printf("%d\t%d\t%s\t%s\n",
+            if(ok==0){
+                printf("%d\t%d\t%s\t%s\n",
                 fileInfo->st_nlink,
-                fileInfo->st_ino,
+                (int)fileInfo->st_ino,
                 formatHuman(fileInfo->st_size,HUMAN),
                 pDirent->d_name
               );
             }else{
-              printf("abs: %s",fname );
-              printf ("%d %d %s\n",  pDirent->d_fileno, pDirent->d_reclen, pDirent->d_name);
+              printf ("abs: - %s -\t - %d -\t - %s -\n", fname, (int)pDirent->d_fileno, pDirent->d_name);
             }
           }
         }
 
+        if(RECURSIVE == true && pDirent->d_name[0] != '.'){
+          if(ok == 0){
+            if(S_ISDIR(fileInfo->st_mode)){
+                char* dirRecursive = malloc(strlen(fname)+2);
+                sprintf(dirRecursive,"%s/",fname);
+                printf("Archivos en %s:\n",dirRecursive);
+                ls_r(dirRecursive,params);
+                free(dirRecursive);
+            }
+          }
+        }
+        free(fname);
     }
+    free(fileInfo);
+
+
+
     closedir (pDir);
+    //deleteParam(params);
     return 0;
   }
 
@@ -108,7 +130,9 @@
       mkdir(newDirName, 0700);
     }else{
       printError("El directorio ya existe!");
+      return -1;
     }
+    return 0;
   }
 
 
@@ -206,7 +230,7 @@
   char* formatHuman(long bytes,short flag){
     char* cantidad = malloc(16*sizeof(char));
     if(flag == false){
-      sprintf(cantidad,"%d",bytes);
+      sprintf(cantidad,"%ld",bytes);
       return cantidad;
     }
 
@@ -214,26 +238,26 @@
       long gigas = bytes/GB;
       bytes -= gigas*GB;
       long megas = bytes/MB;
-      sprintf(cantidad,"%d.%dG",gigas,megas);
+      sprintf(cantidad,"%ld.%1ldGB",gigas,megas);
       return cantidad;
     }else if(bytes > MB){
       long megas = bytes/MB;
       bytes -= megas*MB;
       long kilos = bytes/KB;
-      sprintf(cantidad,"%d.%dM",megas,kilos);
+      sprintf(cantidad,"%ld.%1ldMB",megas,kilos);
       return cantidad;
     }else if(bytes > KB){
       long kilos = bytes/KB;
       bytes -= kilos*KB;
-      sprintf(cantidad,"%d.%dK",kilos,bytes);
+      sprintf(cantidad,"%ld.%1ldKB",kilos,bytes);
       return cantidad;
     }
-    sprintf(cantidad,"%dB",bytes);
+    sprintf(cantidad,"%ldB",bytes);
     return cantidad;
 
   }
 
-  void printError(char* msg){
+  void printError(const char* msg){
     printf(ANSI_COLOR_YELLOW);
     printf(msg);
     printf(ANSI_COLOR_RESET);
@@ -252,15 +276,17 @@
       else{
         struct Param* p = params;
         p = p->next;
-        // comprobar si es archivo o directorio
+        //comprobar si es archivo o directorio
         char* fname = p->value;
         struct stat* fileInfo = malloc(sizeof(struct stat));
         if(stat(fname,fileInfo)==0){
         	if(S_ISDIR(fileInfo->st_mode)){
             	//es directorio
+              chown(fname, -1, grp->gr_gid);
               printf("dir");
         	}else{
         	   	//es archivo
+              chown(fname, -1, grp->gr_gid);
               printf("file");
         	}
         }else{
@@ -268,6 +294,7 @@
         }
       }
     }
+    return 0;
   }
 
   int _chmod( struct Param* params){
