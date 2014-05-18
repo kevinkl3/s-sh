@@ -1481,7 +1481,7 @@ yyreduce:
 
   case 22:
 #line 50 "sintactico.y"
-    {(yyval.entero) = 0; printf("find");;}
+    {(yyval.entero) = find((yyvsp[(2) - (2)].param));;}
     break;
 
   case 23:

@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <regex.h>
 #define false 0
 #define true 1
 #define KB 1024
@@ -300,4 +301,110 @@
       }
     }
     return 0;
+  }
+
+  int find(struct Param* params){
+    if(params == NULL){
+      printError("find esperaba almenos 2 parametros.");
+      return -1;
+    }
+    if(params->next == NULL){
+      printError("find esperaba almenos 2 parametros.");
+      return -1;
+    }
+    return find_r(params->value,params->next);
+  }
+
+  int find_r(char* directory , struct Param* params){
+    struct dirent *pDirent;
+    DIR *pDir;
+    char* nameExpr;
+    /*OPTIONS*/
+    short REGEX = false;
+    if(strcmp(params->value,"-name")==0){
+      REGEX = true;
+      if(params->next == NULL){
+        printError("find esperaba una expresion despues de -name");
+        return -1;
+      }
+      params = params->next;
+    }
+
+    nameExpr = params->value;
+
+    pDir = opendir (directory);
+    if (pDir == NULL) {
+        printf ("No se puede abrir el directorio '%s'\n", directory);
+        return 1;
+    }
+
+    struct stat* fileInfo = malloc(sizeof(struct stat));
+    int strSz,ok;
+    while ((pDirent = readdir(pDir)) != NULL) {
+        strSz = strlen(directory) + strlen(pDirent->d_name) + 1;
+        char* fname = (char*)malloc(strSz);
+        sprintf(fname,"%s%s",directory,pDirent->d_name);
+        ok = stat(fname,fileInfo);
+
+        if(pDirent->d_name[0] != '.'){
+          if(ok == 0){
+            //Comparar Archuvo
+            if(REGEX == false){
+              if(strcmp(nameExpr,pDirent->d_name)==0)
+                printf ("%s\n",fname);
+            }else{
+              //buscar con regex
+              if(regexcmp(nameExpr,pDirent->d_name)==0){
+                printf ("%s\n",fname);
+              }
+            }
+            if(S_ISDIR(fileInfo->st_mode)){
+                char* dirRecursive = malloc(strlen(fname)+2);
+                sprintf(dirRecursive,"%s/",fname);
+                //printf("Archivos en %s:\n",dirRecursive);
+                find_r(dirRecursive,params);
+                free(dirRecursive);
+            }
+          }
+        }
+        free(fname);
+    }
+    free(fileInfo);
+
+
+
+    closedir (pDir);
+    //deleteParam(params);
+    return 0;
+
+  }
+
+  int regexcmp(char* reg, char* val){
+        regex_t regex;
+        int reti;
+        char msgbuf[100];
+
+        /* Compile regular expression */
+        reti = regcomp(&regex, reg, 0);
+        if( reti ){ fprintf(stderr, "Could not compile regex\n"); exit(1); }
+
+        /* Execute regular expression */
+        reti = regexec(&regex, val, 0, NULL, 0);
+        if( !reti ){
+            //puts("Match");
+            regfree(&regex);
+            return 0;
+        }else if( reti == REG_NOMATCH ){
+            //puts("No match");
+            regfree(&regex);
+            return -1;
+        }else{
+            regerror(reti, &regex, msgbuf, sizeof(msgbuf));
+            fprintf(stderr, "Regex match failed: %s\n", msgbuf);
+            //exit(1);
+            regfree(&regex);
+            return -2;
+        }
+        /* Free compiled regular expression if you want to use the regex_t again */
+        regfree(&regex);
   }
