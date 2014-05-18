@@ -312,7 +312,16 @@
       printError("find esperaba almenos 2 parametros.");
       return -1;
     }
-    return find_r(params->value,params->next);
+    char* searchDir = params->value;
+    short absolute = false;
+    if(searchDir[0] != '/'){
+        searchDir = (char*)malloc(strlen(params->value)+strlen(currentPath));
+        sprintf(searchDir,"%s%s",currentPath,params->value);
+        absolute = true;
+    }
+    int retVal = find_r(searchDir,params->next);
+    if(absolute == true)free(searchDir);
+    return retVal;
   }
 
   int find_r(char* directory , struct Param* params){
@@ -339,6 +348,8 @@
         return 1;
     }
 
+    //printf("finding in dir: %s\n\n",directory);
+
     struct stat* fileInfo = malloc(sizeof(struct stat));
     int strSz,ok;
     while ((pDirent = readdir(pDir)) != NULL) {
@@ -360,7 +371,7 @@
               }
             }
             if(S_ISDIR(fileInfo->st_mode)){
-                char* dirRecursive = malloc(strlen(fname)+2);
+                char* dirRecursive = malloc(strlen(fname)+1);
                 sprintf(dirRecursive,"%s/",fname);
                 //printf("Archivos en %s:\n",dirRecursive);
                 find_r(dirRecursive,originalParams);
