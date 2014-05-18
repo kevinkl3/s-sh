@@ -43,7 +43,7 @@ fcall  :     LS       params   {$$ = ls($2);}
           |  CD       params   {$$ = cd($2);}
 					|  MV       params   {$$ = mv($2);}
           |  MKDIR    params   {$$ = makedir($2);}
-          |  CHGRP    params   {$$ = 0; printf("chgrp");}
+          |  CHGRP    params   {$$ = chgrp($2);}
           |  CHMOD    params   {$$ = 0; printf("chmod");}
           |  CHOWN    params   {$$ = 0; printf("chown");}
           |  RM       params   {$$ = rm($2);}
@@ -53,7 +53,7 @@ fcall  :     LS       params   {$$ = ls($2);}
 params :  PARAMETRO params{
 						$$ = newParam($1,$2);
 					}
-					|/*null*/ {$$ = NULL}
+					|/*null*/ {$$ = NULL;}
 ;
 
 %%

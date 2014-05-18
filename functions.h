@@ -27,6 +27,7 @@ int cd(struct Param*);
 int makedir(struct Param*);
 int mv(struct Param*);
 int rm(struct Param*);
+int chgrp(struct Param*);
 int potencia(int,int);
 char* formatHuman(long,short);
 void printError(char*);

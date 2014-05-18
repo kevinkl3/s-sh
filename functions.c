@@ -1,4 +1,5 @@
 #include "functions.h"
+#include <grp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -236,4 +237,35 @@
     printf(ANSI_COLOR_YELLOW);
     printf(msg);
     printf(ANSI_COLOR_RESET);
+  }
+
+  int chgrp(struct Param* params){
+    if(params == NULL){
+      printf("chgrp esperaba dos parametro.");
+      return 1;
+    }else{
+      struct group *grp;
+      short int    lp;
+      grp = getgrnam(params->value);
+      if (NULL == grp)
+        printf("El Grupo que desea asignar no existe.");
+      else{
+        struct Param* p = params;
+        p = p->next;
+        // comprobar si es archivo o directorio
+        char* fname = p->value;
+        struct stat* fileInfo = malloc(sizeof(struct stat));
+        if(stat(fname,fileInfo)==0){
+        	if(S_ISDIR(fileInfo->st_mode)){
+            	//es directorio
+              printf("dir");
+        	}else{
+        	   	//es archivo
+              printf("file");
+        	}
+        }else{
+        	printError("el archivo no existe");
+        }
+      }
+    }
   }

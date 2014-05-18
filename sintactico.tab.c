@@ -1461,7 +1461,7 @@ yyreduce:
 
   case 18:
 #line 46 "sintactico.y"
-    {(yyval.entero) = 0; printf("chgrp");;}
+    {(yyval.entero) = chgrp((yyvsp[(2) - (2)].param));;}
     break;
 
   case 19:
@@ -1493,7 +1493,7 @@ yyreduce:
 
   case 24:
 #line 56 "sintactico.y"
-    {(yyval.param) = NULL;}
+    {(yyval.param) = NULL;;}
     break;
 
 
