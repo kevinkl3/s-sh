@@ -1,6 +1,7 @@
 #include "functions.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
 #define false 0
 #define true 1
 #define KB 1024
@@ -102,7 +103,8 @@
     struct stat* dirStat = malloc(sizeof(struct stat));
     if(stat(newDirName,dirStat) == -1){
       //create
-      printf("no existe");
+      //printf("no existe");
+      mkdir(newDirName, 0700);
     }else{
       printError("El directorio ya existe!");
     }
@@ -112,7 +114,7 @@
   int cd(struct Param* params){
     //validation
     if(params == NULL){
-      printf("cd esperaba un parametro.");
+      printError("cd esperaba un parametro.");
       return 1;
     }
 
@@ -129,7 +131,7 @@
 
     pDir = opendir ( targetDir);
     if (pDir == NULL) {
-            printf ("Cannot open directory '%s'\n", targetDir);
+            printf("No se puede abrir el directorio '%s'\n", targetDir);
             return 1;
     }
 
@@ -145,6 +147,56 @@
 
     return 0;
   }
+
+  int mv(struct Param* params){
+    if(params == NULL){
+      printError("mv esperaba 2 argumentos.");
+      return -1;
+    }
+    if(params->next == NULL){
+      printError("mv esperaba 2 argumentos.");
+      return -1;
+    }
+    char* from = params->value;
+    char* to = params->next->value;
+    int salida = rename(from,to);
+    if(salida == -1){
+      switch(errno){
+        case EACCES:{
+          printError("Error, permiso de escritura denegado.");
+          break;
+        }
+        case ENOTEMPTY:
+        case EEXIST:{
+          printError("Error, el directorio de destino ya existe y no esta vacio.");
+          break;
+        }
+        default:{
+          printf("Error desconocido %d",errno);
+        }
+      }
+
+      return -1;
+    }
+    return 0;
+  }
+
+  int rm(struct Param* params){
+    if(params == NULL){
+      printError("rm esperaba 1 argumento.\nUso: rm nombre_de_archivo");
+    }
+
+    int salida;
+    do{
+      salida = remove(params->value);
+      if(salida == -1){
+        printf("Error eliminando el archivo %s.\n",params->value);
+      }
+      params = params->next;
+    }while(params != NULL);
+    return 0;
+  }
+
 
   int potencia(int a, int b){
       return b <= 0 ? 1 : a * potencia(a,b-1);
@@ -181,5 +233,7 @@
   }
 
   void printError(char* msg){
-    printf("\x1b[33m%s\n\x1b[0m",msg);
+    printf(ANSI_COLOR_YELLOW);
+    printf(msg);
+    printf(ANSI_COLOR_RESET);
   }

@@ -44,20 +44,21 @@
      PAR_DER = 260,
      LS = 261,
      CD = 262,
-     MKDIR = 263,
-     CHGRP = 264,
-     CHMOD = 265,
-     CHOWN = 266,
-     RM = 267,
-     FIND = 268,
-     PARAMETRO = 269,
-     NUMERO = 270,
-     MENOS = 271,
-     MAS = 272,
-     ENTRE = 273,
-     POR = 274,
-     POTENCIA = 275,
-     EOL = 276
+     MV = 263,
+     MKDIR = 264,
+     CHGRP = 265,
+     CHMOD = 266,
+     CHOWN = 267,
+     RM = 268,
+     FIND = 269,
+     PARAMETRO = 270,
+     NUMERO = 271,
+     MENOS = 272,
+     MAS = 273,
+     ENTRE = 274,
+     POR = 275,
+     POTENCIA = 276,
+     EOL = 277
    };
 #endif
 /* Tokens.  */
@@ -66,20 +67,21 @@
 #define PAR_DER 260
 #define LS 261
 #define CD 262
-#define MKDIR 263
-#define CHGRP 264
-#define CHMOD 265
-#define CHOWN 266
-#define RM 267
-#define FIND 268
-#define PARAMETRO 269
-#define NUMERO 270
-#define MENOS 271
-#define MAS 272
-#define ENTRE 273
-#define POR 274
-#define POTENCIA 275
-#define EOL 276
+#define MV 263
+#define MKDIR 264
+#define CHGRP 265
+#define CHMOD 266
+#define CHOWN 267
+#define RM 268
+#define FIND 269
+#define PARAMETRO 270
+#define NUMERO 271
+#define MENOS 272
+#define MAS 273
+#define ENTRE 274
+#define POR 275
+#define POTENCIA 276
+#define EOL 277
 
 
 
@@ -93,7 +95,7 @@ typedef union YYSTYPE
 	char* cadena;
 }
 /* Line 1529 of yacc.c.  */
-#line 97 "sintactico.tab.h"
+#line 99 "sintactico.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

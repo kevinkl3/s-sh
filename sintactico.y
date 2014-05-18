@@ -7,7 +7,7 @@
 	int entero;
 	char* cadena;
 }
-%token 		VARIABLE PAR_IZQ PAR_DER LS CD MKDIR CHGRP CHMOD CHOWN RM FIND
+%token 		VARIABLE PAR_IZQ PAR_DER LS CD MV MKDIR CHGRP CHMOD CHOWN RM FIND
 %token		 <cadena> PARAMETRO
 %token 		 <entero> NUMERO
 
@@ -23,11 +23,11 @@
 %%
 
 
-salida : /*null*/{$$=0;printf("\n%s@%s> ",currentUser,hostName);}
-        | salida operacion EOL {printf(" %d\n%s@%s> ",$2,currentUser,hostName);}
-				| salida fcall EOL {printf("\n%s@%s> ",currentUser,hostName);}
+salida : /*null*/{$$=0;printf("\n\x1b[36m%s@%s\x1b[0m> ",currentUser,hostName);}
+        | salida operacion EOL {printf(" %d\n\x1b[36m%s@%s\x1b[0m> ",$2,currentUser,hostName);}
+				| salida fcall EOL {printf("\n\x1b[36m%s@%s\x1b[0m> ",currentUser,hostName);}
 				| salida PARAMETRO {printf("\x1b[33mError %s, comando invalido.\n\x1b[0m",$2);}
-        | salida EOL {printf("\n%s@%s> ",currentUser,hostName);}
+        | salida EOL {printf("\n\x1b[36m%s@%s\x1b[0m> ",currentUser,hostName);}
 ;
 
 operacion :   operacion MAS operacion {$$= $1 + $3;}
@@ -41,11 +41,12 @@ operacion :   operacion MAS operacion {$$= $1 + $3;}
 
 fcall  :     LS       params   {$$ = ls($2);}
           |  CD       params   {$$ = cd($2);}
+					|  MV       params   {$$ = mv($2);}
           |  MKDIR    params   {$$ = makedir($2);}
           |  CHGRP    params   {$$ = 0; printf("chgrp");}
           |  CHMOD    params   {$$ = 0; printf("chmod");}
           |  CHOWN    params   {$$ = 0; printf("chown");}
-          |  RM       params   {$$ = 0; printf("rm");}
+          |  RM       params   {$$ = rm($2);}
           |  FIND     params   {$$ = 0; printf("find");}
 ;
 
