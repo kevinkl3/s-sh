@@ -1,5 +1,5 @@
 #ifndef FUNCTIONS_H
-#define FUNCITONS_H
+#define FUNCTIONS_H
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -31,6 +31,8 @@ int rm(struct Param*);
 int chgrp(struct Param*);
 int potencia(int,int);
 int _chmod(struct Param*);
+int _chmod_r(const char* ,struct Param*);
+
 char* formatHuman(long,short);
 void printError(const char*);
 #endif
