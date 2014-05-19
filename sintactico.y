@@ -44,8 +44,8 @@ fcall  :     LS       params   {$$ = ls($2);}
 					|  MV       params   {$$ = mv($2);}
           |  MKDIR    params   {$$ = makedir($2);}
           |  CHGRP    params   {$$ = chgrp($2);}
-          |  CHMOD    params   {$$ = 0; printf("chmod");}
-          |  CHOWN    params   {$$ = _chown($2);}
+          |  CHMOD    params   {$$ = _chmod($2);}
+        	|  CHOWN    params   {$$ = _chown($2);}
           |  RM       params   {$$ = rm($2);}
           |  FIND     params   {$$ = find($2);}
 ;

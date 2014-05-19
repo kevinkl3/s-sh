@@ -5,7 +5,7 @@ simbolo [\[\]\{\}\^\$\+\*\.\\]
 punto "."
 pleca "/"
 bajo "_"
-parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo}|{bajo})+
+parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo}|{digito}|{bajo})+
 %{
 #include <stdio.h>
 #include "sintactico.tab.h"
@@ -13,8 +13,6 @@ parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo}|{bajo
 
 %%
 
-
-{digito}+ 									 {yylval.entero = atoi(yytext);return NUMERO;}
 "ls"												 {return LS;}
 "cd"												 {return CD;}
 "mkdir" 										 {return MKDIR;}
