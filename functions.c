@@ -1,5 +1,6 @@
 #include "functions.h"
 #include <grp.h>
+#include <pwd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -62,7 +63,7 @@
     }
 
     if(LARGE==true){
-      printf("Links\tInode\tSize\t\tName\n");
+      printf("Permission\tLinks\tInode\t\tOwner\tGroup\tSize\tName\n");
     }
     struct stat* fileInfo = malloc(sizeof(struct stat));
     int strSz,ok;
@@ -77,9 +78,24 @@
             printf ("%s\n", pDirent->d_name);
           else{
             if(ok==0){
-                printf("%d\t%d\t%s\t%s\n",
+                printf( (S_ISDIR(fileInfo->st_mode)) ? "d" : "-");
+                printf( (fileInfo->st_mode & S_IRUSR) ? "r" : "-");
+                printf( (fileInfo->st_mode & S_IWUSR) ? "w" : "-");
+                printf( (fileInfo->st_mode & S_IXUSR) ? "x" : "-");
+                printf( (fileInfo->st_mode & S_IRGRP) ? "r" : "-");
+                printf( (fileInfo->st_mode & S_IWGRP) ? "w" : "-");
+                printf( (fileInfo->st_mode & S_IXGRP) ? "x" : "-");
+                printf( (fileInfo->st_mode & S_IROTH) ? "r" : "-");
+                printf( (fileInfo->st_mode & S_IWOTH) ? "w" : "-");
+                printf( (fileInfo->st_mode & S_IXOTH) ? "x" : "-");
+                printf("\t");
+                struct passwd* pwd = getpwuid(fileInfo->st_uid);
+                struct group* grp = getgrgid(fileInfo->st_gid);
+                printf("%d\t%d\t%s\t%s\t%s\t%s\n",
                 fileInfo->st_nlink,
                 (int)fileInfo->st_ino,
+                pwd->pw_name,
+                grp->gr_name,
                 formatHuman(fileInfo->st_size,HUMAN),
                 pDirent->d_name
               );
@@ -423,3 +439,42 @@
         /* Free compiled regular expression if you want to use the regex_t again */
         regfree(&regex);
   }
+
+int _chown(struct Param* params){
+  if(params == NULL){
+    printf("chown esperaba dos parametro.");
+    return 1;
+  }else{
+    struct passwd *pwd;
+    short int    lp;
+    pwd = getpwnam(params->value);
+    if (NULL == pwd)
+      printf("El Usuario que desea asignar no existe.");
+    else{
+      struct Param* p = params;
+      p = p->next;
+      //comprobar si es archivo o directorio
+      char* fname = (char*)malloc(strlen(currentPath) + strlen(p->value)+1);
+      sprintf(fname,"%s%s",currentPath,p->value);
+      struct stat* fileInfo = malloc(sizeof(struct stat));
+      if(stat(fname,fileInfo)==0){
+        int salida = chown(fname,pwd->pw_uid, -1);
+        if(salida == -1){
+          printError("Error al cambiar el usuario del archivo/directorio.");
+          free(fname);
+          return -1;
+        }else if(salida == 0){
+          printf("ok!");
+        }
+        /*
+        if(S_ISDIR(fileInfo->st_mode)){
+        }else{
+        }*/
+      }else{
+        printError("el archivo no existe");
+      }
+      free(fname);
+    }
+  }
+  return 0;
+}

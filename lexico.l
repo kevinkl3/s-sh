@@ -4,7 +4,8 @@ otro "-"
 simbolo [\[\]\{\}\^\$\+\*\.\\]
 punto "."
 pleca "/"
-parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo})+
+bajo "_"
+parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo}|{bajo})+
 %{
 #include <stdio.h>
 #include "sintactico.tab.h"

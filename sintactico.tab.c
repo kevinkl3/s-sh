@@ -1471,7 +1471,7 @@ yyreduce:
 
   case 20:
 #line 48 "sintactico.y"
-    {(yyval.entero) = 0; printf("chown");;}
+    {(yyval.entero) = _chown((yyvsp[(2) - (2)].param));;}
     break;
 
   case 21:
