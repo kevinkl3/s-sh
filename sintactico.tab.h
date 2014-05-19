@@ -51,14 +51,15 @@
      CHOWN = 267,
      RM = 268,
      FIND = 269,
-     PARAMETRO = 270,
-     NUMERO = 271,
-     MENOS = 272,
-     MAS = 273,
-     ENTRE = 274,
-     POR = 275,
-     POTENCIA = 276,
-     EOL = 277
+     CLEAR = 270,
+     PARAMETRO = 271,
+     NUMERO = 272,
+     MENOS = 273,
+     MAS = 274,
+     ENTRE = 275,
+     POR = 276,
+     POTENCIA = 277,
+     EOL = 278
    };
 #endif
 /* Tokens.  */
@@ -74,14 +75,15 @@
 #define CHOWN 267
 #define RM 268
 #define FIND 269
-#define PARAMETRO 270
-#define NUMERO 271
-#define MENOS 272
-#define MAS 273
-#define ENTRE 274
-#define POR 275
-#define POTENCIA 276
-#define EOL 277
+#define CLEAR 270
+#define PARAMETRO 271
+#define NUMERO 272
+#define MENOS 273
+#define MAS 274
+#define ENTRE 275
+#define POR 276
+#define POTENCIA 277
+#define EOL 278
 
 
 
@@ -95,7 +97,7 @@ typedef union YYSTYPE
 	char* cadena;
 }
 /* Line 1529 of yacc.c.  */
-#line 99 "sintactico.tab.h"
+#line 101 "sintactico.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

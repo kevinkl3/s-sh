@@ -20,6 +20,7 @@ parametro ({punto}+|({letra}+({digito}|{letra})*)|{pleca}|{otro}|{simbolo}|{digi
 "chmod" 										 {return CHMOD;}
 "chown" 										 {return CHOWN;}
 "find"											 {return FIND;}
+"clear"											{return CLEAR;}
 "mv"											 	{return MV;}
 "rm"												 {return RM;}
 "exit"											 { printf("\x1b[36mGoodBye!\x1b[0m"); exit(0); }

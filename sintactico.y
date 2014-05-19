@@ -7,7 +7,7 @@
 	int entero;
 	char* cadena;
 }
-%token 		VARIABLE PAR_IZQ PAR_DER LS CD MV MKDIR CHGRP CHMOD CHOWN RM FIND
+%token 		VARIABLE PAR_IZQ PAR_DER LS CD MV MKDIR CHGRP CHMOD CHOWN RM FIND CLEAR
 %token		 <cadena> PARAMETRO
 %token 		 <entero> NUMERO
 
@@ -48,6 +48,7 @@ fcall  :     LS       params   {$$ = ls($2);}
         	|  CHOWN    params   {$$ = _chown($2);}
           |  RM       params   {$$ = rm($2);}
           |  FIND     params   {$$ = find($2);}
+					|  CLEAR		params		{$$ = 0; printf("\033[2J\n");}
 ;
 
 params :  PARAMETRO params{
